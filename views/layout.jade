@@ -1,0 +1,61 @@
+doctype 5
+html
+  head
+    - if (typeof(title) == 'undefined')
+        title Express Starter Template
+    - else 
+        title= title
+    
+    // include default stylesheets and any view stylesheets
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    
+    // include default scripts and any view scripts
+    script(src='/javascripts/jquery-1.8.3.min.js')
+    script(src='/javascripts/modernizr.js')
+    
+    block head
+    
+  body   
+    header
+      div(class='content-wrapper')
+        div(class="float-left")
+          p(class="site-title")
+            a(href="/") your logo here
+        div(class="float-right")
+          section#login
+            ul
+            -if(!everyauth.loggedIn)
+                li
+                    a(href="/register") Register
+                li
+                    a(href="/login") Log in
+                    
+            -else
+                -if(everyauth.facebook)
+                    li Welcome !{everyauth.facebook.user.first_name} !{everyauth.facebook.user.last_name}!
+                -else if(everyauth.twitter)
+                    li Welcome !{everyauth.twitter.user.name}!
+                -else if(everyauth.password)
+                    li Welcome!
+                li 
+                    a(href="/logout") Logout
+          nav
+            ul#menu
+              li 
+                a(href="/") Home
+              li 
+                a(href="/chat") Chat
+              li
+                a(href="/about") About
+    #body
+        block content
+      
+    footer
+      div(class="content-wrapper")
+        div(class="float-left")
+          p &copy; !{(new Date()).getFullYear()}
+        div(class="float-right")
+          ul#social
+            li
+              a(href="http://facebook.com/MicrosoftWebMatrix", class="facebook") Facebook
+              a(href="http://twitter.com/WebMatrix", class="twitter") Twitter
