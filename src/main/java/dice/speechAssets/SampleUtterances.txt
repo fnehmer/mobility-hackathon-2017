@@ -1,0 +1,5 @@
+chooseDice nehme einen {sides} seitigen würfel.
+chooseDice nehme einen würfel mit {sides} seiten.
+chooseDice wähle einen würfel mit {sides} seiten. 
+
+rollDice würfel für mich
