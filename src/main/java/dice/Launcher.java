@@ -1,5 +1,7 @@
 package dice;
 
+import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,7 +27,21 @@ public class Launcher {
 		String result = mobi.getNumberOfBikesAt("Saarlandstraße", "100");
 		String result1 = mobi.getNumberOfBikesAt("Stadthallenbrücke", "100");
 
-		System.out.println(mobi.lookForBikesAtRadius("Saarlandstraße", "1000"));
+		HashMap<String, String> set = mobi.lookForBikesAtRadius("Saarlandstraße", "1000");
+		String outputtext = "";
+		for (String street : set.keySet()) {
+			String stock = set.get(street);
 
+			String modifikation = "";
+			if (stock.equals("1"))
+				modifikation = " ein Fahrrad. \n";
+			else
+				modifikation += stock + " Fahrräder. \n";
+
+			outputtext += "In der Straße " + street + " befinden sich gegenwärtig " + modifikation;
+
+		}
+
+		System.out.println(">>> " + outputtext);
 	}
 }

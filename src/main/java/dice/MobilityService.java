@@ -39,7 +39,8 @@ public class MobilityService {
 		String lat = String.valueOf(coordinate_json.get("y"));
 
 		String numberOfBikes = _stadtradapi.getNumberOfBikesAt(lat, lon, radius);
-		System.out.println("In " + address + " befinden sich derzeit " + numberOfBikes + " Bikes.");
+		// System.out.println("In " + address + " befinden sich derzeit " +
+		// numberOfBikes + " Bikes.");
 		return numberOfBikes;
 	}
 

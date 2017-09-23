@@ -89,7 +89,7 @@ public class StadtRadAPI {
 				+ "&expand=rentalobject,area&radius=" + radius + "&limit=5&providernetwork=2";
 		JSONObject response = makeRequest(url);
 		JSONArray results = (JSONArray) response.get("items");
-		
+
 		return results;
 	}
 }
