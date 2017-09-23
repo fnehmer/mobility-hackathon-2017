@@ -10,8 +10,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.json.JSONObject;
 
-import android.util.Base64;
-
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
