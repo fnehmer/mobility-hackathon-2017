@@ -54,7 +54,6 @@ public class WetterService {
 				return result;
 			}
 		}
-
 		return "fail";
 	}
 
