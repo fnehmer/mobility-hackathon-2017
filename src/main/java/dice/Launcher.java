@@ -3,8 +3,7 @@ package dice;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class main {
-
+public class Launcher {
 	public static void main(String[] args) {
 		GeofoxAPI geofoxapi = new GeofoxAPI();
 		JSONObject json = geofoxapi.checkStation("Hamburger Straße");
@@ -19,5 +18,4 @@ public class main {
 		JSONObject json_pan = stadtradapi.checkBike(lat, lon);
 		System.out.println(json_pan.toString(4));
 	}
-
 }

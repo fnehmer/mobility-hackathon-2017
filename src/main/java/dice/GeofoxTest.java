@@ -4,68 +4,53 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+
 import org.json.JSONObject;
+
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import javax.xml.bind.DatatypeConverter;
 
 @SuppressWarnings("restriction")
-public class GeofoxAPI {
-	private OkHttpClient _client;
-	private final MediaType _mediatype_json;
-	private final String _geofoxApiEndpoint;
+public class GeofoxTest {
 
-	public GeofoxAPI() {
-		_client = new OkHttpClient();
-		_mediatype_json = MediaType.parse("application/json; charset=utf-8");
-		_geofoxApiEndpoint = "http://api-hack.geofox.de/gti/public/";
+	private static final String GEOFOX_API_BASE_URL = "http://api-hack.geofox.de/gti/public/";
 
+	@SuppressWarnings("unused")
+	private static final String HTTPBIN_ANYTHING = "http://httpbin.org/anything";
+
+	public static void main(String[] args) {
+		getRouteTest();
+		checkNameTest();
 	}
 
-	public JSONObject checkStation(String stationName) {
-		String geofox_url = "http://api-hack.geofox.de/gti/public/checkName";
-		// String geofox_url = "http://httpbin.org/anything";
+	public static void checkNameTest() {
+		String geofox_url = GEOFOX_API_BASE_URL + "checkName";
 
 		// the name
 		JSONObject theName = new JSONObject();
-		theName.put("name", stationName);
-		theName.put("type", "STATION");
+		theName.put("name", "Barmbek");
+		theName.put("type", "UNKNOWN");
 
 		// request json
 		JSONObject requestJson = new JSONObject();
 		requestJson.put("coordinateType", "EPSG_4326");
 		requestJson.put("maxList", 1);
-		requestJson.put("version", 16);
+		requestJson.put("version", 31);
 		requestJson.put("theName", theName);
 
-		RequestBody body = RequestBody.create(_mediatype_json, requestJson.toString());
-
-		// passwort hash
-		String userSignature = mkSignature("H4m$urgH13okt", requestJson.toString().getBytes());
-
-		Request request = new Request.Builder().url(geofox_url).post(body).addHeader("Accept", "application/json")
-				.addHeader("geofox-auth-type", "HmacSha1").addHeader("Content-Type", "application/json")
-				.addHeader("Geofox-Auth-User", "mobi-hack").addHeader("geofox-auth-signature", userSignature).build();
-		Response response;
-
-		JSONObject responseJson = null;
-		try {
-			response = _client.newCall(request).execute();
-			responseJson = new JSONObject(response.body().string());
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return responseJson;
+		Request request = buildRequest(geofox_url, requestJson);
+		executeRequestAndPrintResponse(request);
 	}
 
-	public void getRouteTest() {
-		String geofox_url = _geofoxApiEndpoint + "getRoute";
+	public static void getRouteTest() {
+		String geofox_url = GEOFOX_API_BASE_URL + "getRoute";
 
 		JSONObject requestJson = new JSONObject();
 		requestJson.put("language", "de");
@@ -80,7 +65,7 @@ public class GeofoxAPI {
 		executeRequestAndPrintResponse(request);
 	}
 
-	public String mkSignature(String password, byte[] requestBody) {
+	public static String mkSignature(String password, byte[] requestBody) {
 		final Charset passwordEncoding = Charset.forName("UTF-8");
 		final String algorithm = "HmacSHA1";
 
@@ -99,8 +84,8 @@ public class GeofoxAPI {
 
 		return DatatypeConverter.printBase64Binary(signature);
 	}
-
-	public Request buildRequest(String api_endpoint, JSONObject requestJson) {
+	
+	public static Request buildRequest(String api_endpoint, JSONObject requestJson) {
 		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 		RequestBody body = RequestBody.create(JSON, requestJson.toString());
 
@@ -113,7 +98,7 @@ public class GeofoxAPI {
 				.addHeader("Geofox-Auth-User", "mobi-hack").addHeader("geofox-auth-signature", userSignature).build();
 	}
 
-	public void executeRequestAndPrintResponse(Request request) {
+	public static void executeRequestAndPrintResponse(Request request) {
 		try {
 			OkHttpClient client = new OkHttpClient();
 			Response response;
@@ -125,15 +110,15 @@ public class GeofoxAPI {
 		}
 	}
 
-	public JSONObject createHauptbahnhofJSON() {
+	public static JSONObject createHauptbahnhofJSON() {
 		return new JSONObject().put("id", "Master:9910910").put("type", "STATION");
 	}
 
-	public JSONObject createBarmbekJSON() {
+	public static JSONObject createBarmbekJSON() {
 		return new JSONObject().put("id", "Master:70950").put("type", "STATION");
 	}
 
-	public JSONObject createTimeJSON() {
+	public static JSONObject createTimeJSON() {
 		return new JSONObject().put("date", "23.09.2017").put("time", "15:00");
 	}
 }
