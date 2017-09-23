@@ -27,7 +27,7 @@ public class Launcher {
 		String result = mobi.getNumberOfBikesAt("Saarlandstraße", "100");
 		String result1 = mobi.getNumberOfBikesAt("Stadthallenbrücke", "100");
 
-		HashMap<String, String> set = mobi.lookForBikesAtRadius("Saarlandstraße", "1000");
+		HashMap<String, String> set = mobi.lookForBikesAtRadius("Hamburger Straße", "100");
 		String outputtext = "";
 		for (String street : set.keySet()) {
 			String stock = set.get(street);
@@ -38,7 +38,7 @@ public class Launcher {
 			else
 				modifikation += stock + " Fahrräder. \n";
 
-			outputtext += "In der Straße " + street + " befinden sich gegenwärtig " + modifikation;
+			outputtext += "In " + street + " befinden sich gegenwärtig " + modifikation;
 
 		}
 
