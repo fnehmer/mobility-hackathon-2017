@@ -13,3 +13,9 @@ friendtrivia erzähle etwas über {friendname}
 friendtrivia erzähle von {friendname}
 friendtrivia interessantes über {friendname}
 friendtrivia noch etwas über {friendname}
+
+setFavorite speichere ein ziel als favorit
+setFavorite speichere einen favoriten
+
+setFavAddress 
+setFavStation

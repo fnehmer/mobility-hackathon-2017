@@ -28,6 +28,7 @@ public class MobilitySpeechlet implements Speechlet {
 	private static final String SLOT_STATIONNAME = "name";
 	private static final String INTENT_FRIEND = "friendtrivia";
 	private static final String SLOT_FRIENDNAME = "friendname";
+	private static final String INTENT_SETFAV = "setFavorite";
 	
 	public void onSessionStarted(final SessionStartedRequest request, final Session session) throws SpeechletException {
 		log.info("onSessionStarted requestId={}, sessionId={}", request.getRequestId(), session.getSessionId());
@@ -54,6 +55,8 @@ public class MobilitySpeechlet implements Speechlet {
 			return handleBikeCount();
 		} else if (INTENT_FRIEND.equals(intentName)) {
 			return handleFriendTrivia(request.getIntent());
+		}else if (INTENT_SETFAV.equals(intentName)) {
+				return handleSetFavorite(request.getIntent());
 		} else if ("AMAZON.HelpIntent".equals(intentName)) {
 			return handleHelpIntent();
 		} else if ("AMAZON.StopIntent".equals(intentName)) {
@@ -70,13 +73,29 @@ public class MobilitySpeechlet implements Speechlet {
 
 	
 	private SpeechletResponse handleBikeStation() {
+		
+		String stationname;
+		int bikenumber;
+		
+				
 		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-		speech.setText("Dies ist ein Beispiel: Die nächste Stadtrad Station ist Saarlandstrasse. Dort sind aktuell 12 Fahrräder verfügbar.");
+	//	speech.setText("Die nächste Stadtrad Station ist " + stationname + " Dort sind aktuell " + bikenumber + "Fahrräder verfügbar.");
 		return SpeechletResponse.newAskResponse(speech, createRepromptSpeech());
 	}
 	
 	
 	private SpeechletResponse handleBikeCount() {
+		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
+		speech.setText("Dies ist ein Beispiel: An der Station Saarlandstrasse sind aktuell 12 Fahrräder verfügbar.");
+		return SpeechletResponse.newAskResponse(speech, createRepromptSpeech());		
+	
+	}
+	
+	private SpeechletResponse handleSetFavorite(Intent intent) {
+		
+		String intentName = intent.getSlot(SLOT_FRIENDNAME).getValue();
+		//intentName in Datenbank speichern
+	
 		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
 		speech.setText("Dies ist ein Beispiel: An der Station Saarlandstrasse sind aktuell 12 Fahrräder verfügbar.");
 		return SpeechletResponse.newAskResponse(speech, createRepromptSpeech());		
@@ -103,10 +122,8 @@ public class MobilitySpeechlet implements Speechlet {
 	        	factIndex = (int) Math.floor(Math.random() * JONAS_FACTS.length);
 		        fact = JONAS_FACTS[factIndex];
 		        speechText = fact;
-	        	break;
-	        case "Pinguine":
+	        	break;   	
 	        case "Winn":
-	        case "Pingu":
 	        	factIndex = (int) Math.floor(Math.random() * VINH_FACTS.length);
 		        fact = VINH_FACTS[factIndex];
 		        speechText = fact;
@@ -116,9 +133,7 @@ public class MobilitySpeechlet implements Speechlet {
 		        fact = FLO_FACTS[factIndex];
 		        speechText = fact;
 	        	break;
-	        case "Pandas":
 	        case "Jenny":
-	        case "Apfel":
 	        	factIndex = (int) Math.floor(Math.random() * PANDA_FACTS.length);
 		        fact = PANDA_FACTS[factIndex];
 		        speechText = fact;
