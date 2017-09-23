@@ -1,0 +1,30 @@
+{
+  "intents": [
+    
+    {
+    	"intent": "getBikeStation"
+    },
+    
+    {
+    	"intent": "getBikeCount"
+
+    },
+    
+    {
+     "intent": "friendtrivia",
+      "slots": [
+        {
+          "name": "friendname",
+          "type": "custom_name"
+        }
+      ]
+    },
+    
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    }
+  ]
+}

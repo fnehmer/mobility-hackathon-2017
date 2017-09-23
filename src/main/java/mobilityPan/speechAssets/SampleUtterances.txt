@@ -1,0 +1,15 @@
+getMyLocation wo bin ich
+getMyLocation wie lautet meine adresse
+getMyLocation nenne mir meinen standort
+
+
+getBikeStation wo ist die nächste stadtrad station
+getBikeStation stadtrad station
+
+getBikeCount wie viele fahrräder gibt es an der station
+getBikeCount anzahl fahrräder an station 
+
+friendtrivia erzähle etwas über {friendname}
+friendtrivia erzähle von {friendname}
+friendtrivia interessantes über {friendname}
+friendtrivia noch etwas über {friendname}
