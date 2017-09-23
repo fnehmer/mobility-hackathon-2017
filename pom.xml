@@ -11,33 +11,26 @@
 			<artifactId>alexa-skills-kit</artifactId>
 			<version>1.5.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
 			<version>3.9.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.squareup.okio</groupId>
 			<artifactId>okio</artifactId>
 			<version>1.11.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongodb-driver</artifactId>
+			<version>3.5.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20170516</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.google.android/android -->
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android</artifactId>
-			<version>4.1.1.4</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/javax.xml.crypto/jsr105-api -->
 		<dependency>
 			<groupId>javax.xml.crypto</groupId>
 			<artifactId>jsr105-api</artifactId>
