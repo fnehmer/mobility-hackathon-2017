@@ -19,6 +19,7 @@ import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
 
+import Services.WetterService;
 import dice.MobilityService;
 
 public class MobilitySpeechlet implements Speechlet {
@@ -28,10 +29,17 @@ public class MobilitySpeechlet implements Speechlet {
 	private static final String INTENT_BIKECOUNT = "getBikeCount";
 	private static final String SLOT_STATIONNAME = "name";
 	private static final String INTENT_FRIEND = "friendtrivia";
+	private static final String INTENT_WEATHER = "getWeather";
 	private static final String SLOT_FRIENDNAME = "friendname";
-
-	private static final String INTENT_SETFAV = "setFavorite";
+	private static final String SESSION_SAVEFAV = "saveFavorite";
+	private static final String INTENT_NEXTINTENT = "promtNext";
+	private static final String INTENT_NEWFAV = "newFavorite";
+	private static final String INTENT_SETFAV = "setFavoriteText";
+	private static final String SLOT_SETFAVTEXT = "setText";
 	
+	
+	private String currentFavorite = "";
+	private String nameFavorite = "";
 
 	public void onSessionStarted(final SessionStartedRequest request, final Session session) throws SpeechletException {
 		log.info("onSessionStarted requestId={}, sessionId={}", request.getRequestId(), session.getSessionId());
@@ -56,13 +64,24 @@ public class MobilitySpeechlet implements Speechlet {
 			return handleBikeCount();
 		} else if (INTENT_FRIEND.equals(intentName)) {
 			return handleFriendTrivia(request.getIntent());
+		}else if (INTENT_NEWFAV.equals(intentName)) {
+				return handleNewFavorite();
 		}else if (INTENT_SETFAV.equals(intentName)) {
-				return handleSetFavorite(request.getIntent());
-		} else if ("AMAZON.HelpIntent".equals(intentName)) {
+			return handleSetFavorite(request.getIntent());
+	
+		} 
+		else if (INTENT_NEXTINTENT.equals(intentName)) {
+			return handleSetFavName();
+		}
+		else if ("AMAZON.HelpIntent".equals(intentName)) {
 			return handleHelpIntent();
 		} else if ("AMAZON.StopIntent".equals(intentName)) {
 			return handleStopIntent();
-		} else {
+		} 
+		else if ("AMAZON.NoIntent".equals(intentName)) {
+			return handleStopIntent();
+		}
+		else {
 			throw new SpeechletException("Invalid Intent");
 		}
 	}
@@ -71,19 +90,60 @@ public class MobilitySpeechlet implements Speechlet {
 		log.info("onSessionEnded requestId={}, sessionId={}", request.getRequestId(), session.getSessionId());
 	}
 
+	//getUpcomingWeather;
+	
 	private SpeechletResponse handleBikeStation() {
-String favoriteStation = "Saarlandstraße";
+		String favoriteStation = "Saarlandstraße";
 		MobilityService mobilityService = new MobilityService();
+		StringBuilder speechOutputBuilder = new StringBuilder();
+		WetterService ws = new WetterService();
+		String speechOutput = ""; 
 
 		// Get informations from API
 		String stationName = mobilityService.getStationName(favoriteStation);
 		String numberOfBikes = mobilityService.getNumberOfBikesAt(favoriteStation);
 
+		
 		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-		speech.setText("Die nächste Stadtrad Station ist " + stationName + ". Dort sind gegenwärtig " + numberOfBikes
-				+ " Fahrräder verfügbar!");
-
+		int bikeNumber = Integer.parseInt("numberOfBikes");
+		
+		
+		if(bikeNumber <= 0) {
+			
+			speechOutputBuilder.append("Die nächste Stadtrad Station ist " + stationName + ". Dort sind aktuell leider keine Fahrräder mehr verfügbar.");
+		
+		}else if(bikeNumber == 1) {
+			
+			speechOutputBuilder.append("Die nächste Stadtrad Station ist " + stationName + ". Dort sind aktuell nur noch ein"
+					+ " Fahrrad verfügbar!");
+		
+		}else {
+			
+			speechOutputBuilder.append("Die nächste Stadtrad Station ist " + stationName + ". Dort sind gegenwärtig " + numberOfBikes
+					+ " Fahrräder verfügbar!");
+			
+		}
+	
+		
+		speechOutputBuilder.append(" .  . ");
+		
+		if(ws.getUpcomingWeather().equals("Rain")) {
+			
+			speechOutputBuilder.append("Achtung : . Es wird heute wahrscheinlich noch regnen.");
+			speechOutputBuilder.append(" .  .  . ");
+		}else {
+			
+			speechOutputBuilder.append(" Es wird heute nicht regnen.");
+			speechOutputBuilder.append(" .  .  . ");
+		}
+			
+		
+		speechOutputBuilder.append(" Hast du noch weitere Fragen?");
+		
+		speechOutput = speechOutputBuilder.toString();
+		speech.setText(speechOutput);
 		return SpeechletResponse.newAskResponse(speech, createRepromptSpeech());
+	
 	}
 
 	private SpeechletResponse handleBikeCount() {
@@ -94,17 +154,45 @@ String favoriteStation = "Saarlandstraße";
 	}
 
 	
-	private SpeechletResponse handleSetFavorite(Intent intent) {
-		
-		String intentName = intent.getSlot(SLOT_FRIENDNAME).getValue();
-		//intentName in Datenbank speichern
+	private SpeechletResponse handleNewFavorite() {
 	
 		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-		speech.setText("Dies ist ein Beispiel: An der Station Saarlandstrasse sind aktuell 12 Fahrräder verfügbar.");
+		speech.setText("Okay. Du kannst eine Haltestelle, einen Straßennamen mit Hausnummer oder einen besonderen Ort als Favorit anlegen. Um zu beginnen sage : " +
+		" . Favorit erstellen : ");
 		return SpeechletResponse.newAskResponse(speech, createRepromptSpeech());		
 	
 	}
 	
+	private SpeechletResponse handleSetFavorite(Intent intent) {
+		
+		currentFavorite = intent.getSlot(SLOT_SETFAVTEXT).getValue();
+		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
+		speech.setText("Dein Favorit lautet : " + currentFavorite + " . . Ist das Korrekt?");
+		return SpeechletResponse.newAskResponse(speech, createRepromptSpeech());		
+	
+	}
+	
+	
+	private SpeechletResponse handleSetFavName() {
+		
+		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
+		speech.setText("Okay. Unter welchem Namen soll ich deinen Favoriten speichern? " +
+		"Um einen Namen zu vergeben sage : " + " . Favorit benennen : ");
+		return SpeechletResponse.newAskResponse(speech, createRepromptSpeech());		
+	
+	}
+	
+	
+	
+	
+	private Reprompt askIfCorrect() {
+		PlainTextOutputSpeech repromptSpeech = new PlainTextOutputSpeech();
+		repromptSpeech.setText("Dein Favorit lautet : ");
+		Reprompt reprompt = new Reprompt();
+		reprompt.setOutputSpeech(repromptSpeech);
+		return reprompt;
+	}
+
 	
 
 	private SpeechletResponse handleFriendTrivia(Intent intent) {
@@ -112,7 +200,7 @@ String favoriteStation = "Saarlandstraße";
 		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
 		int factIndex;
 		String fact;
-		String speechText = null;
+		String speechText = "";
 
 		if (intent.getSlot(SLOT_FRIENDNAME).getValue() == null) {
 			speech.setText("Du musst den Namen einen Freundes nennen.");
@@ -127,9 +215,7 @@ String favoriteStation = "Saarlandstraße";
 				fact = JONAS_FACTS[factIndex];
 				speechText = fact;
 				break;
-			case "Pinguine":
 			case "Winn":
-			case "Pingu":
 				factIndex = (int) Math.floor(Math.random() * VINH_FACTS.length);
 				fact = VINH_FACTS[factIndex];
 				speechText = fact;
@@ -139,9 +225,7 @@ String favoriteStation = "Saarlandstraße";
 				fact = FLO_FACTS[factIndex];
 				speechText = fact;
 				break;
-			case "Pandas":
 			case "Jenny":
-			case "Apfel":
 				factIndex = (int) Math.floor(Math.random() * PANDA_FACTS.length);
 				fact = PANDA_FACTS[factIndex];
 				speechText = fact;
@@ -161,13 +245,16 @@ String favoriteStation = "Saarlandstraße";
 
 	private SpeechletResponse handleStopIntent() {
 		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-		speech.setText("auf wiedersehen.");
+		speech.setText("okay. auf wiedersehen.");
 		return SpeechletResponse.newTellResponse(speech);
 	}
 
+
+	
+	
 	private SpeechletResponse handleHelpIntent() {
 		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-		speech.setText("bestimme wieviel seiten dein würfel hat oder würfle");
+		speech.setText("Hier kommt ein Hilfe Texts");
 		return SpeechletResponse.newTellResponse(speech);
 	}
 
@@ -178,6 +265,7 @@ String favoriteStation = "Saarlandstraße";
 		reprompt.setOutputSpeech(repromptSpeech);
 		return reprompt;
 	}
+	
 
 	private static final String[] VINH_FACTS = new String[] { "Pinguine sind verfressen.", "Quas, wex, exort!",
 			"Pinguine stinken." };

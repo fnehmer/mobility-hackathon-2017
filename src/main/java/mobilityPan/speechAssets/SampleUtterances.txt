@@ -1,8 +1,3 @@
-getMyLocation wo bin ich
-getMyLocation wie lautet meine adresse
-getMyLocation nenne mir meinen standort
-
-
 getBikeStation wo ist die nächste stadtrad station
 getBikeStation stadtrad station
 
@@ -14,8 +9,21 @@ friendtrivia erzähle von {friendname}
 friendtrivia interessantes über {friendname}
 friendtrivia noch etwas über {friendname}
 
-setFavorite speichere ein ziel als favorit
-setFavorite speichere einen favoriten
+newFavorite speichere ein ziel als favorit
+newFavorite speichere einen favoriten
+newFavorite speichere ein ziel
+newFavorite favorit erstellen
+
+setFavoriteText favorit erstellen {setText}
 
 setFavAddress 
 setFavStation
+
+promtNext ja
+promtNext korrekt
+promtNext stimmt
+
+
+AMAZON.StopIntent nein
+AMAZON.StopIntent nein danke
+AMAZON.StopIntent nö

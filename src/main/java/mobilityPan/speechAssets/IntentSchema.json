@@ -21,13 +21,40 @@
     },
     
    	{
-    	"intent": "setFavorite"
+    	"intent": "newFavorite"
 
     },
     
     
+   {
+  		"intent": "setFavoriteText",
+  	   	"slots": [
+        {
+          "name": "setText",
+          "type": "custom_places"
+        }
+      ]
+  	
+  	
+  
+  	},
+   
+
+   	{
+    	"intent": "promtNext"
+
+    },
+
+
+    
     {
       "intent": "AMAZON.HelpIntent"
+    },
+    
+    
+           
+    {
+      "intent": "AMAZON.NoIntent"
     },
     {
       "intent": "AMAZON.StopIntent"
