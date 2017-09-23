@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+
 import org.json.JSONObject;
+
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import javax.xml.bind.DatatypeConverter;
 
 @SuppressWarnings("restriction")
 public class GeofoxAPI {
@@ -26,18 +29,42 @@ public class GeofoxAPI {
 		_geofoxApiEndpoint = "http://api-hack.geofox.de/gti/public/";
 	}
 
+	/**
+	 * Retrieve Geofox internal information about an address.
+	 * 
+	 * @param address
+	 *            the address
+	 * @return the raw JSON response to the request
+	 */
 	public JSONObject checkAddress(String address) {
 		return checkName(address, "ADDRESS");
 	}
-	
+
+	/**
+	 * Retrieve Geofox internal information about a station.
+	 * 
+	 * @param stationName
+	 *            the name of the station
+	 * @return the raw JSON response to the request
+	 */
 	public JSONObject checkStation(String stationName) {
 		return checkName(stationName, "STATION");
 	}
 
+	/**
+	 * Retrieve Geofox internal information about a place.
+	 * 
+	 * @param name
+	 *            the name of the place
+	 * @param type
+	 *            the type of the place
+	 * @return the raw JSON response to the request
+	 */
 	public JSONObject checkName(String name, String type) {
 		String geofox_url = _geofoxApiEndpoint + "checkName";
 
 		JSONObject theName = new JSONObject();
+
 		theName.put("name", name);
 		theName.put("type", type);
 
@@ -50,17 +77,49 @@ public class GeofoxAPI {
 		Request request = buildRequest(geofox_url, requestJson);
 		return executeRequestAndReturnJSONResponse(request);
 	}
-	
-	public JSONObject getRoute() {
+
+	public JSONObject checkName(String stationName) {
+		String geofox_url = _geofoxApiEndpoint + "checkName";
+
+		JSONObject theName = new JSONObject();
+		theName.put("name", stationName);
+		theName.put("type", "UNKNOWN");
+
+		JSONObject requestJson = new JSONObject();
+		requestJson.put("coordinateType", "EPSG_4326");
+		requestJson.put("maxList", 1);
+		requestJson.put("version", 31);
+		requestJson.put("theName", theName);
+
+		Request request = buildRequest(geofox_url, requestJson);
+		return executeRequestAndReturnJSONResponse(request);
+	}
+
+	/**
+	 * Get the optimal route from one point to another.
+	 * 
+	 * @param start
+	 *            the start location
+	 * @param dest
+	 *            the destination
+	 * @param time
+	 *            the planned time of departure or arrival, has to be in the format
+	 *            {"date":"DD.MM.YYYY","time":"HH:MM"}
+	 * @param timeIsDeparture
+	 *            if true, then time is the time of departure, else it is the time
+	 *            of arrival
+	 * @return the raw JSON response to the request
+	 */
+	public JSONObject getRoute(JSONObject start, JSONObject dest, JSONObject time, Boolean timeIsDeparture) {
 		String geofox_url = _geofoxApiEndpoint + "getRoute";
 
 		JSONObject requestJson = new JSONObject();
 		requestJson.put("language", "de");
 		requestJson.put("version", 31);
-		requestJson.put("start", createHauptbahnhofJSON());
-		requestJson.put("dest", createBarmbekJSON());
-		requestJson.put("time", createTimeJSON());
-		requestJson.put("timeIsDeparture", true);
+		requestJson.put("start", start);
+		requestJson.put("dest", dest);
+		requestJson.put("time", time);
+		requestJson.put("timeIsDeparture", timeIsDeparture);
 		requestJson.put("numberOfSchedules", 1);
 
 		Request request = buildRequest(geofox_url, requestJson);
@@ -92,7 +151,6 @@ public class GeofoxAPI {
 
 		// passwort hash
 		String userSignature = mkSignature("H4m$urgH13okt", requestJson.toString().getBytes());
-		System.out.println(userSignature);
 
 		return new Request.Builder().url(api_endpoint).post(body).addHeader("Accept", "application/json")
 				.addHeader("geofox-auth-type", "HmacSha1").addHeader("Content-Type", "application/json")
@@ -109,17 +167,5 @@ public class GeofoxAPI {
 			e.printStackTrace();
 		}
 		return responseJson;
-	}
-
-	private JSONObject createHauptbahnhofJSON() {
-		return new JSONObject().put("id", "Master:9910910").put("type", "STATION");
-	}
-
-	private JSONObject createBarmbekJSON() {
-		return new JSONObject().put("id", "Master:70950").put("type", "STATION");
-	}
-
-	private JSONObject createTimeJSON() {
-		return new JSONObject().put("date", "23.09.2017").put("time", "15:00");
 	}
 }

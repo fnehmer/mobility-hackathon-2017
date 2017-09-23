@@ -31,6 +31,7 @@ public class MobilitySpeechlet implements Speechlet {
 	private static final String INTENT_FRIEND = "friendtrivia";
 	private static final String INTENT_WEATHER = "getWeather";
 	private static final String SLOT_FRIENDNAME = "friendname";
+
 	private static final String SESSION_SAVEFAV = "saveFavorite";
 	private static final String INTENT_NEXTINTENT = "promtNext";
 	private static final String INTENT_NEWFAV = "newFavorite";
@@ -40,6 +41,9 @@ public class MobilitySpeechlet implements Speechlet {
 	
 	private String currentFavorite = "";
 	private String nameFavorite = "";
+
+
+
 
 	public void onSessionStarted(final SessionStartedRequest request, final Session session) throws SpeechletException {
 		log.info("onSessionStarted requestId={}, sessionId={}", request.getRequestId(), session.getSessionId());
@@ -64,6 +68,7 @@ public class MobilitySpeechlet implements Speechlet {
 			return handleBikeCount();
 		} else if (INTENT_FRIEND.equals(intentName)) {
 			return handleFriendTrivia(request.getIntent());
+
 		}else if (INTENT_NEWFAV.equals(intentName)) {
 				return handleNewFavorite();
 		}else if (INTENT_SETFAV.equals(intentName)) {
@@ -73,7 +78,10 @@ public class MobilitySpeechlet implements Speechlet {
 		else if (INTENT_NEXTINTENT.equals(intentName)) {
 			return handleSetFavName();
 		}
-		else if ("AMAZON.HelpIntent".equals(intentName)) {
+		 else if (INTENT_SETFAV.equals(intentName)) {
+			return handleSetFavorite(request.getIntent());
+		} else if ("AMAZON.HelpIntent".equals(intentName)) {
+
 			return handleHelpIntent();
 		} else if ("AMAZON.StopIntent".equals(intentName)) {
 			return handleStopIntent();
@@ -101,7 +109,7 @@ public class MobilitySpeechlet implements Speechlet {
 
 		// Get informations from API
 		String stationName = mobilityService.getStationName(favoriteStation);
-		String numberOfBikes = mobilityService.getNumberOfBikesAt(favoriteStation);
+		String numberOfBikes = mobilityService.getNumberOfBikesAt(favoriteStation, "100");
 
 		
 		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
@@ -153,6 +161,7 @@ public class MobilitySpeechlet implements Speechlet {
 
 	}
 
+
 	
 	private SpeechletResponse handleNewFavorite() {
 	
@@ -195,6 +204,7 @@ public class MobilitySpeechlet implements Speechlet {
 
 	
 
+
 	private SpeechletResponse handleFriendTrivia(Intent intent) {
 
 		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
@@ -206,7 +216,6 @@ public class MobilitySpeechlet implements Speechlet {
 			speech.setText("Du musst den Namen einen Freundes nennen.");
 		} else {
 
-	       
 			String intentName = intent.getSlot(SLOT_FRIENDNAME).getValue();
 			switch (intentName) {
 
@@ -236,7 +245,6 @@ public class MobilitySpeechlet implements Speechlet {
 			}
 
 			speech.setText(speechText);
-
 
 		}
 		return SpeechletResponse.newAskResponse(speech, createRepromptSpeech());
