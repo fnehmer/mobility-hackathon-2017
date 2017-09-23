@@ -1,5 +1,5 @@
 chooseDice nehme einen {sides} seitigen würfel.
 chooseDice nehme einen würfel mit {sides} seiten.
 chooseDice wähle einen würfel mit {sides} seiten. 
-
+AMAZON.HelpIntent hilf mir.
 rollDice würfel für mich
