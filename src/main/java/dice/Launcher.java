@@ -16,6 +16,13 @@ public class Launcher {
 
 		StadtRadAPI stadtradapi = new StadtRadAPI();
 		JSONObject json_pan = stadtradapi.checkBike(lat, lon);
-		System.out.println(json_pan.toString(4));
+		// System.out.println(json_pan.toString(4));
+
+		String stationName = stadtradapi.getStationName(lat, lon);
+		// System.out.println(stationName);
+
+		MobilityService mobi = new MobilityService();
+		System.out.println(mobi.getNumberOfBikesAt("Saarlandstraße"));
+
 	}
 }

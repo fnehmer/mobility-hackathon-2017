@@ -1,4 +1,4 @@
-package dice;
+package mobilityPan;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -7,7 +7,7 @@ import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.lambda.SpeechletRequestStreamHandler;
 
 
-public class DiceSpeechletRequestStreamHandler extends SpeechletRequestStreamHandler {
+public class MobilityRequestStreamHandler extends SpeechletRequestStreamHandler {
 
     private static final Set<String> supportedApplicationIds;
 
@@ -17,11 +17,11 @@ public class DiceSpeechletRequestStreamHandler extends SpeechletRequestStreamHan
         
     }
 
-    public DiceSpeechletRequestStreamHandler() {
-        super(new DiceSpeechlet(), supportedApplicationIds);
+    public MobilityRequestStreamHandler() {
+        super(new MobilitySpeechlet(), supportedApplicationIds);
     }
 
-    public DiceSpeechletRequestStreamHandler(Speechlet speechlet,
+    public MobilityRequestStreamHandler(Speechlet speechlet,
             Set<String> supportedApplicationIds) {
         super(speechlet, supportedApplicationIds);
     }
