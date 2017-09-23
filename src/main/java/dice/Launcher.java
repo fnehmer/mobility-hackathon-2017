@@ -22,7 +22,10 @@ public class Launcher {
 		// System.out.println(stationName);
 
 		MobilityService mobi = new MobilityService();
-		System.out.println(mobi.getNumberOfBikesAt("Saarlandstraße"));
+		String result = mobi.getNumberOfBikesAt("Saarlandstraße", "100");
+		String result1 = mobi.getNumberOfBikesAt("Stadthallenbrücke", "100");
+
+		System.out.println(mobi.lookForBikesAtRadius("Saarlandstraße", "1000"));
 
 	}
 }

@@ -34,7 +34,7 @@ public class GeofoxAPI {
 		// the name
 		JSONObject theName = new JSONObject();
 		theName.put("name", stationName);
-		theName.put("type", "STATION");
+		theName.put("type", "UNKNOWN");
 
 		// request json
 		JSONObject requestJson = new JSONObject();

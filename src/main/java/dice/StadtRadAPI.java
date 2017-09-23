@@ -1,6 +1,9 @@
 package dice;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,51 +47,49 @@ public class StadtRadAPI {
 	}
 
 	public String getStationName(String lat, String lon) {
-		String url = "https://api.deutschebahn.com/flinkster-api-ng/v1/bookingproposals?lat=53.589104&lon=10.031621&expand=rentalobject,area&radius=100&limit=5&providernetwork=2";
+		String url = "https://api.deutschebahn.com/flinkster-api-ng/v1/bookingproposals?lat=" + lat + "&lon=" + lon
+				+ "&expand=rentalobject,area&radius=100&limit=5&providernetwork=2";
 
-		// String geofox_url = "http://httpbin.org/anything";
+		JSONObject response = makeRequest(url);
+		JSONObject array = ((JSONObject) ((JSONObject) ((JSONArray) response.get("items")).get(0)).get("area"));
+		String stationName = (String) array.get("name");
 
+		return stationName;
+	}
+
+	private JSONObject makeRequest(String url) {
 		Request request = new Request.Builder().url(url).get().addHeader("Accept", "application/json")
 				.addHeader("Authorization", "Bearer fcc6a36f18ba221547c26ead7cf73fb4").build();
 		Response response;
 
-		String stationName = "";
 		JSONObject responseJson = null;
 		try {
 			response = _client.newCall(request).execute();
 
 			responseJson = new JSONObject(response.body().string());
-			JSONObject array = ((JSONObject) ((JSONObject) ((JSONArray) responseJson.get("items")).get(0)).get("area"));
-			stationName = (String) array.get("name");
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return stationName;
+		return responseJson;
+	}
+
+	public String getNumberOfBikesAt(String lat, String lon, String radius) {
+		String url = "https://api.deutschebahn.com/flinkster-api-ng/v1/bookingproposals?lat=" + lat + "&lon=" + lon
+				+ "&expand=rentalobject,area&radius=" + radius + "&limit=5&providernetwork=2";
+		JSONObject response = makeRequest(url);
+		String numberOfBikes = response.get("size") + "";
+
+		return numberOfBikes;
 
 	}
 
-	public String getNumberOfBikesAt(String lat, String lon) {
-		String url = "https://api.deutschebahn.com/flinkster-api-ng/v1/bookingproposals?lat=53.589104&lon=10.031621&expand=rentalobject,area&radius=100&limit=5&providernetwork=2";
-
-		// String geofox_url = "http://httpbin.org/anything";
-
-		Request request = new Request.Builder().url(url).get().addHeader("Accept", "application/json")
-				.addHeader("Authorization", "Bearer fcc6a36f18ba221547c26ead7cf73fb4").build();
-		Response response;
-
-		String numberOfBikes = "";
-		JSONObject responseJson = null;
-		try {
-			response = _client.newCall(request).execute();
-
-			responseJson = new JSONObject(response.body().string());
-			numberOfBikes = responseJson.get("size") + "";
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return numberOfBikes;
-
+	public JSONArray getAvailableBikes(String lat, String lon, String radius) {
+		String url = "https://api.deutschebahn.com/flinkster-api-ng/v1/bookingproposals?lat=" + lat + "&lon=" + lon
+				+ "&expand=rentalobject,area&radius=" + radius + "&limit=5&providernetwork=2";
+		JSONObject response = makeRequest(url);
+		JSONArray results = (JSONArray) response.get("items");
+		
+		return results;
 	}
 }

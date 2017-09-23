@@ -31,7 +31,6 @@ public class MobilitySpeechlet implements Speechlet {
 	private static final String SLOT_FRIENDNAME = "friendname";
 
 	private static final String INTENT_SETFAV = "setFavorite";
-	
 
 	public void onSessionStarted(final SessionStartedRequest request, final Session session) throws SpeechletException {
 		log.info("onSessionStarted requestId={}, sessionId={}", request.getRequestId(), session.getSessionId());
@@ -56,8 +55,8 @@ public class MobilitySpeechlet implements Speechlet {
 			return handleBikeCount();
 		} else if (INTENT_FRIEND.equals(intentName)) {
 			return handleFriendTrivia(request.getIntent());
-		}else if (INTENT_SETFAV.equals(intentName)) {
-				return handleSetFavorite(request.getIntent());
+		} else if (INTENT_SETFAV.equals(intentName)) {
+			return handleSetFavorite(request.getIntent());
 		} else if ("AMAZON.HelpIntent".equals(intentName)) {
 			return handleHelpIntent();
 		} else if ("AMAZON.StopIntent".equals(intentName)) {
@@ -72,12 +71,12 @@ public class MobilitySpeechlet implements Speechlet {
 	}
 
 	private SpeechletResponse handleBikeStation() {
-String favoriteStation = "Saarlandstraße";
+		String favoriteStation = "Saarlandstraße";
 		MobilityService mobilityService = new MobilityService();
 
 		// Get informations from API
 		String stationName = mobilityService.getStationName(favoriteStation);
-		String numberOfBikes = mobilityService.getNumberOfBikesAt(favoriteStation);
+		String numberOfBikes = mobilityService.getNumberOfBikesAt(favoriteStation, "100");
 
 		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
 		speech.setText("Die nächste Stadtrad Station ist " + stationName + ". Dort sind gegenwärtig " + numberOfBikes
@@ -93,19 +92,16 @@ String favoriteStation = "Saarlandstraße";
 
 	}
 
-	
 	private SpeechletResponse handleSetFavorite(Intent intent) {
-		
+
 		String intentName = intent.getSlot(SLOT_FRIENDNAME).getValue();
-		//intentName in Datenbank speichern
-	
+		// intentName in Datenbank speichern
+
 		PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
 		speech.setText("Dies ist ein Beispiel: An der Station Saarlandstrasse sind aktuell 12 Fahrräder verfügbar.");
-		return SpeechletResponse.newAskResponse(speech, createRepromptSpeech());		
-	
+		return SpeechletResponse.newAskResponse(speech, createRepromptSpeech());
+
 	}
-	
-	
 
 	private SpeechletResponse handleFriendTrivia(Intent intent) {
 
@@ -118,7 +114,6 @@ String favoriteStation = "Saarlandstraße";
 			speech.setText("Du musst den Namen einen Freundes nennen.");
 		} else {
 
-	       
 			String intentName = intent.getSlot(SLOT_FRIENDNAME).getValue();
 			switch (intentName) {
 
@@ -152,7 +147,6 @@ String favoriteStation = "Saarlandstraße";
 			}
 
 			speech.setText(speechText);
-
 
 		}
 		return SpeechletResponse.newAskResponse(speech, createRepromptSpeech());
