@@ -1,10 +1,13 @@
 package Services;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -53,6 +56,31 @@ public class WetterService {
 				result = ""+weather.substring(1, weather.length() - 1);
 				return result;
 			}
+		}
+		return "fail";
+	}
+	
+	/*
+	 * Pan ist ein Pandaaa!!
+	 */
+	public String getUpcomingWeather()
+	{
+		Date date = new Date();
+		int day = date.getDay();
+		int month = date.getMonth();
+		int hour = date.getHours() + 1;
+		
+		try {
+			return getWeather(month, day, hour);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return "fail";
 	}
