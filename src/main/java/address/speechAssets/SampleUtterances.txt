@@ -1,4 +1,0 @@
-GetAddress wo bin ich
-GetAddress wie lautet meine adresse
-GetAddress wie ist meine adresse
-GetAddress nenne mir meinen standort
